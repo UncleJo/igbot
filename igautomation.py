@@ -37,14 +37,16 @@ def loginconfirmation(username):
     else:
         return False
 
-#try catch here
+
 def turn_on_notification_state():
-    if browser.find_element_by_xpath("//button[text()='Turn On']"):
-        if browser.find_element_by_xpath("//button[text()='Not Now']"):
-            return True
-        else:
-            return False
-    else:
+    try:
+        if browser.find_element_by_xpath("//button[text()='Turn On']"):
+            try:
+                if browser.find_element_by_xpath("//button[text()='Not Now']"):
+                    return True
+            except:
+                return False
+    except:
         return False
 
 
@@ -104,13 +106,15 @@ def main():
 
 def checklist():
     global turn_on_notification_status
-    while True:
-        sleep(5)
-        inbox_status = open_inbox()
-        if inbox_status is True:
-            turn_on_notification_action(False)
-            if turn_on_notification_status is False:
-                print("Pre-Check Done!")
+    sleep(5)
+    inbox_status = open_inbox()
+    if inbox_status is True:
+        turn_on_notification_action(False)
+        if turn_on_notification_status is False:
+            print("Pre-Check Done!")
+            #onward
+    else:
+        print("Pre-Check Failed!")
 
 
 main()
