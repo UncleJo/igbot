@@ -6,6 +6,7 @@ login_status = False
 username = ""
 password = ""
 credential_status = False
+turn_on_notification_status = None
 
 
 def login(username, password):
@@ -30,9 +31,45 @@ def login(username, password):
 
 def loginconfirmation(username):
     browser.get('https://www.instagram.com/{usrname}/'.format(usrname=username))
+    sleep(5)
     if browser.find_element_by_xpath("//button[text()='Edit Profile']"):
         return True
     else:
+        return False
+
+#try catch here
+def turn_on_notification_state():
+    if browser.find_element_by_xpath("//button[text()='Turn On']"):
+        if browser.find_element_by_xpath("//button[text()='Not Now']"):
+            return True
+        else:
+            return False
+    else:
+        return False
+
+
+def turn_on_notification_action(value):
+    global turn_on_notification_status
+    if turn_on_notification_state() is True:
+        if value is True:
+            turn_on_notification = browser.find_element_by_xpath("//button[text()='Turn On']")
+            turn_on_notification.click()
+        else:
+            turn_off_notification = browser.find_element_by_xpath("//button[text()='Not Now']")
+            turn_off_notification.click()
+            turn_on_notification_status = False
+            print('Disabled Notification Popup')
+    else:
+        print("Not Detected")
+
+
+def open_inbox():
+    browser.get('https://www.instagram.com/direct/inbox/')
+    if browser.find_element_by_xpath("//div[text()='Direct']"):
+        print("Opened Inbox")
+        return True
+    else:
+        print("Could not Open Inbox")
         return False
 
 
@@ -44,14 +81,10 @@ def set_credentials():
     login_status = login(username, password)
     if login_status is True:
         print("Logged In!")
-        menu()
+        checklist()
     else:
         print("Wrong Credentials, Enter Again")
         set_credentials()
-
-
-def menu():
-    print(0)
 
 
 def main():
@@ -63,10 +96,21 @@ def main():
         login_status = loginconfirmation(username)
         if login_status is True:
             print("Logged In!")
-            menu()
+            checklist()
         else:
             print("Wrong Credentials, Enter Again")
             set_credentials()
+
+
+def checklist():
+    global turn_on_notification_status
+    while True:
+        sleep(5)
+        inbox_status = open_inbox()
+        if inbox_status is True:
+            turn_on_notification_action(False)
+            if turn_on_notification_status is False:
+                print("Pre-Check Done!")
 
 
 main()
