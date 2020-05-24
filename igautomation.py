@@ -32,9 +32,12 @@ def login(username, password):
 def loginconfirmation(username):
     browser.get('https://www.instagram.com/{usrname}/'.format(usrname=username))
     sleep(5)
-    if browser.find_element_by_xpath("//button[text()='Edit Profile']"):
-        return True
-    else:
+    try:
+        if browser.find_element_by_xpath("//button[text()='Edit Profile']"):
+            return True
+        else:
+            return False
+    except:
         return False
 
 
@@ -89,6 +92,51 @@ def set_credentials():
         set_credentials()
 
 
+def chat_search_opener():
+    state = open_inbox()
+    if state is True:
+        try:
+            search_button = browser.find_element_by_xpath("//button[@class='wpO6b ZQScA']")
+            search_button.click()
+            return True
+        except:
+            return False
+    else:
+        return False
+
+
+def chat_search_and_open(username):
+    try:
+        state = chat_search_opener()
+        if state is True:
+            seach_input = browser.find_element_by_xpath("//input[@placeholder='Search...']")
+            seach_input.send_keys(username)
+            sleep(5)
+            seach_result = browser.find_element_by_xpath(
+                "//div[@class='                    Igw0E   rBNOH        eGOV_    "
+                " ybXk5    _4EzTm                                                "
+                "                                   XfCBB          HVWg4         "
+                "        ']")
+            seach_result.click()
+            next_button = browser.find_element_by_xpath("//button[text()='Next']")
+            next_button.click()
+            return True
+    except:
+        return False
+
+
+def send_dm(username, message):
+    state = chat_search_and_open(username)
+    if state is True:
+        type_message = browser.find_element_by_xpath("//textarea[@placeholder='Message...']")
+        type_message.send_keys(message)
+        send_button = browser.find_element_by_xpath("//button[text()='Send']")
+        send_button.click()
+        print("DM Sent!")
+    else:
+        print("An Error Occoured sending DM")
+
+
 def main():
     global credential_status, login_status
     if credential_status is False:
@@ -112,9 +160,14 @@ def checklist():
         turn_on_notification_action(False)
         if turn_on_notification_status is False:
             print("Pre-Check Done!")
-            #onward
+            action()
     else:
         print("Pre-Check Failed!")
+
+
+def action():
+    print("\n-------------Starting action sequence ------------\n")
+    send_dm("_big.fudge", "Imma bot Nigga")
 
 
 main()
