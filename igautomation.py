@@ -167,7 +167,7 @@ def checklist():
 
 def action():
     print("\n-------------Starting action sequence ------------\n")
-    send_dm("_big.fudge", "Imma bot Nigga")
+    #all the function call goes here
 
 
 main()
