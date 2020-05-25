@@ -5,7 +5,7 @@
   ```
   pip install selenium==3.141.0
   ```
-* [Download Gecodriver for Mozilla Firefox ](https://github.com/mozilla/geckodriver/releases)and move it to /usr/local/bin using the command below. (Note - Gecodriver is just a single file named 'geckodriiver')
+* [Download Geckodriver for Mozilla Firefox ](https://github.com/mozilla/geckodriver/releases)and move it to /usr/local/bin using the command below. (Note - Geckodriver is just a single file named 'Geckodriver')
   ```
   sudo mv geckodriver /usr/local/bin
   ```
