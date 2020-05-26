@@ -8,7 +8,7 @@ setup(
   author = 'Sanxchep Sharma',
   author_email = 'sanxchep@gmail.com',
   url = 'https://github.com/UncleJo/igbot',
-  download_url = 'https://github.com/UncleJo/igbot/archive/v0.1.tar.gz',
+  download_url = 'https://github.com/UncleJo/igbot/archive/v0.1.2.tar.gz',
   keywords = ['Instagram', 'Automation', 'Bot', 'Selenium'], 
   install_requires=[
           'selenium',
