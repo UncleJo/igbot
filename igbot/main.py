@@ -219,7 +219,87 @@ class igbot:
                 send_button.click()
                 print("DM Sent!")
             else:
-                print("An Error Occoured sending DM")
+                print("An Error Occurred sending DM")
         else:
             print("Your Are not Logged In!")
+
+    def open_profile(self, username):
+        if self.login_status is True:
+            self.browser.get('https://www.instagram.com/{usrname}/'.format(usrname=username))
+            sleep(5)
+            try:
+                if self.browser.find_element_by_xpath("//h2[text()='{usrname}']".format(usrname=username)):
+                    print("Opened Profile!")
+                    return True
+                else:
+                    print("Could not Open Profile!")
+                    return False
+            except:
+                print("Could not Open Profile!")
+                return False
+        else:
+            print("Your Are not Logged In!")
+
+    def follow_user(self, username):
+        if self.login_status is True:
+            profile_status = self.open_profile(username)
+            if profile_status is True:
+                try:
+                    follow_button = self.browser.find_element_by_xpath(
+                        "//button[text()='Follow'][@class='BY3EC  sqdOP  "
+                        "L3NKy   y3zKF     ']")
+                    follow_button.click()
+                    print("User Followed!")
+                except:
+                    try:
+                        if self.browser.find_element_by_xpath(
+                                "//button[text()='Requested'][@class='BY3EC  sqdOP  L3NKy   "
+                                " _8A5w5    ']"):
+                            print("User Has already been send a follow request!")
+                    except:
+                        try:
+                            if self.browser.find_element_by_xpath(
+                                    "//button[text()='Message'][@class='fAR91 sqdOP  L3NKy "
+                                    "_4pI4F   _8A5w5    ']"):
+                                print("User is already followed!")
+                        except:
+                            print("Could not follow User!")
+
+            else:
+                print("Could not follow User!")
+        else:
+            print("Your Are not Logged In!")
+
+
+    def unfollow_user(self, username):
+        if self.login_status is True:
+            profile_status = self.open_profile(username)
+            if profile_status is True:
+                try:
+                    unfollow_prompt = self.browser.find_element_by_xpath("//span[@aria-label='Following']["
+                                                                         "@class='glyphsSpriteFriend_Follow u-__7']")
+                    unfollow_prompt.click()
+                    unfollow_button = self.browser.find_element_by_xpath("//button[text()='Unfollow']")
+                    unfollow_button.click()
+                    print("User Unfollowed")
+                except:
+                    try:
+                        if self.browser.find_element_by_xpath("//button[text()='Follow'][@class='BY3EC  sqdOP  L3NKy  "
+                                                              " y3zKF     ']"):
+                            print("User is not being Followed already!")
+                    except:
+                        try:
+                            unfollow_prompt = self.browser.find_element_by_xpath(
+                                "//button[text()='Requested'][@class='BY3EC  sqdOP  L3NKy   "
+                                " _8A5w5    ']")
+                            unfollow_prompt.click()
+                            unfollow_button = self.browser.find_element_by_xpath("//button[text()='Unfollow']")
+                            unfollow_button.click()
+                            print("User Has already been send a follow request! Cancelled it hehe!")
+                        except:
+                            print("Could Not Unfollow User!")
+            else:
+                print("Could Not Unfollow User!")
+
+
 
