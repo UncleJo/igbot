@@ -11,6 +11,8 @@ class igbot:
             self.options.headless = True
             self.login_status = False
             self.notification_status = None
+            self.followers = None
+            self.following = None
             self.username = None
             if gecko_path is None:
                 self.browser = webdriver.Firefox(options=self.options)
@@ -159,7 +161,10 @@ class igbot:
 
     def pre_checklist(self):
         if self.login_status is True:
-            sleep(5)
+            self.browser.get('https://www.instagram.com/{usrname}/'.format(usrname=self.username))
+            sleep(3)
+            self.following = self.__get_amount_self_following()
+            self.followers = self.__get_amount_self_followers()
             inbox_status = self.open_inbox()
             if inbox_status is True:
                 self.turn_on_notification_action(False)
@@ -270,7 +275,6 @@ class igbot:
         else:
             print("Your Are not Logged In!")
 
-
     def unfollow_user(self, username):
         if self.login_status is True:
             profile_status = self.open_profile(username)
@@ -300,6 +304,30 @@ class igbot:
                             print("Could Not Unfollow User!")
             else:
                 print("Could Not Unfollow User!")
+        else:
+            print("You are not logged In!")
 
+    def __get_amount_self_followers(self):
+        if self.login_status is True:
+            try:
+                followers_elem = self.browser.find_element_by_xpath(
+                    "//a[@class='-nal3 '][@href='/{usrname}/followers/']/span[@class='g47SY ']".format(
+                        usrname=self.username))
+                return int(followers_elem.text)
+            except:
+                print("Error Occoured!")
+        else:
+            print("You are not Logged in!")
 
+    def __get_amount_self_following(self):
+        if self.login_status is True:
+            try:
+                following_elem = self.browser.find_element_by_xpath(
+                    "//a[@class='-nal3 '][@href='/{usrname}/following/']/span[@class='g47SY ']".format(
+                        usrname=self.username))
+                return int(following_elem.text)
+            except:
+                print("Error Occoured!")
+        else:
+            print("You are not logged In!")
 
