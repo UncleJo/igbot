@@ -11,8 +11,7 @@ setup(
   download_url = 'https://github.com/UncleJo/igbot/archive/v0.2.tar.gz',
   keywords = ['Instagram', 'Automation', 'Bot', 'Selenium'], 
   install_requires=[
-          'selenium',
-          'random'
+          'selenium'
       ],
   classifiers=[
     'Development Status :: 3 - Alpha',
