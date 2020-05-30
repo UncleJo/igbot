@@ -1,6 +1,5 @@
 from time import sleep
 from selenium import webdriver
-import progressbar
 from selenium.webdriver.firefox.options import Options
 import random
 
