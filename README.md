@@ -10,7 +10,7 @@
   sudo mv geckodriver /usr/local/bin
   ```
 ### Usage
-* Simply import the library and make and object.
+* Simply import the library and make an object.
   ```
   import igbot
   bot = igbot(True) #True will not open the browser. False will open the browser.  
