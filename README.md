@@ -20,7 +20,7 @@
    bot.login("username","password")
    bot.pre_checklist()
    ```
-### Usage
+### Features
 * Login/Logout
 * DM a person
 * Follow/Unfollow a person
