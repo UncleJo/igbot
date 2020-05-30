@@ -20,5 +20,12 @@
    bot.login("username","password")
    bot.pre_checklist()
    ```
+### Usage
+* Login/Logout
+* DM a person
+* Follow/Unfollow a person
+* Fetch Followers and Following list (Coming Soon)
+* Follow Mass Users Over Time (Coming Soon)
+
 ### Docuentation
 * Coming soon. Gotta make more features
