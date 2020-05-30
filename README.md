@@ -27,5 +27,5 @@
 * Fetch Followers and Following list (Coming Soon)
 * Follow Mass Users Over Time (Coming Soon)
 
-### Docuentation
+### Documentation
 * Coming soon. Gotta make more features
