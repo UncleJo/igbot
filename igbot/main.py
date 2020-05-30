@@ -332,6 +332,30 @@ class igbot:
         else:
             print("You are not logged In!")
 
+    def __get_amount_followers(self, username):
+        if self.login_status is True:
+            try:
+                followers_elem = self.browser.find_element_by_xpath(
+                    "//a[@class='-nal3 '][@href='/{usrname}/followers/']/span[@class='g47SY ']".format(
+                        usrname=username))
+                return int(followers_elem.text)
+            except:
+                print("Error Occoured!")
+        else:
+            print("You are not Logged in!")
+
+    def __get_amount_following(self, username):
+        if self.login_status is True:
+            try:
+                following_elem = self.browser.find_element_by_xpath(
+                    "//a[@class='-nal3 '][@href='/{usrname}/following/']/span[@class='g47SY ']".format(
+                        usrname=username))
+                return int(following_elem.text)
+            except:
+                print("Error Occoured!")
+        else:
+            print("You are not logged In!")
+
     def __scrolly_for_followers(self, followers=None):
         i = 0
         if followers is None:
@@ -388,6 +412,7 @@ class igbot:
                     usr = self.browser.find_element_by_xpath(
                         "/html/body/div[4]/div/div[2]/ul/div/li[{n}]/div/div[1]/div[2]/div[1]/a".format(n=i))
                     usernames.append(usr.text)
+                print("Followers Processed!")
             except:
                 print("IG did not give all followers! {f} Followers Scanned.".format(f=len(usernames)))
                 return usernames
@@ -395,6 +420,7 @@ class igbot:
             return usernames
         else:
             print("You are not Logged In!")
+            return 0
 
     def fetch_self_following(self):
         if self.login_status is True:
@@ -412,6 +438,7 @@ class igbot:
                     usr = self.browser.find_element_by_xpath(
                         "/html/body/div[4]/div/div[2]/ul/div/li[{n}]/div/div[1]/div[2]/div[1]/a".format(n=i))
                     usernames.append(usr.text)
+                print("Followings Processed!")
             except:
                 print("IG did not give all followers! {f} Following Scanned.".format(f=len(usernames)))
                 return usernames
@@ -419,4 +446,76 @@ class igbot:
             return usernames
         else:
             print("You are not Logged In!")
+            return 0
 
+    def fetch_following(self, username):
+        if self.login_status is True:
+            if self.is_accessible(username):
+                self.browser.get('https://www.instagram.com/{usrname}/'.format(usrname=username))
+                sleep(3)
+                followers_button = self.browser.find_element_by_xpath(
+                    "//a[@class='-nal3 '][@href='/{usrname}/following/']".format(usrname=username))
+                followers_button.click()
+                sleep(2)
+                usernames = []
+                following = self.__get_amount_following(username)
+                self.__scrolly_for_following()
+                try:
+                    print("100% Fetched! Processing...")
+                    for i in range(1, following + 1):
+                        usr = self.browser.find_element_by_xpath(
+                            "/html/body/div[4]/div/div[2]/ul/div/li[{n}]/div/div[1]/div[2]/div[1]/a".format(n=i))
+                        usernames.append(usr.text)
+                    print("Followings Processed!")
+                except:
+                    print("IG did not give all followers! {f} Following Scanned.".format(f=len(usernames)))
+                    return usernames
+
+                return usernames
+            else:
+                print("Account is not accessible. Are you sure you are following it?")
+                return 0
+        else:
+            print("You are not Logged In!")
+            return 0
+
+    def fetch_followers(self, username):
+        if self.login_status is True:
+            if self.is_accessible(username):
+                followers_button = self.browser.find_element_by_xpath(
+                    "//a[@class='-nal3 '][@href='/{usrname}/followers/']".format(usrname=username))
+                followers_button.click()
+                sleep(2)
+                usernames = []
+                followers = self.__get_amount_followers(username)
+                self.__scrolly_for_followers(followers)
+                try:
+                    print("100% Fetched! Processing...")
+                    for i in range(1, followers + 1):
+                        usr = self.browser.find_element_by_xpath(
+                            "/html/body/div[4]/div/div[2]/ul/div/li[{n}]/div/div[1]/div[2]/div[1]/a".format(n=i))
+                        usernames.append(usr.text)
+                    print("Followers Processed!")
+                except:
+                    print("IG did not give all followers! {f} Followers Scanned.".format(f=len(usernames)))
+                    return usernames
+
+                return usernames
+            else:
+                print("Account is not accessible. Are you sure you are following it?")
+                return 0
+        else:
+            print("You are not Logged In!")
+            return 0
+
+    def is_accessible(self, username):
+        self.browser.get('https://www.instagram.com/{usrname}/'.format(usrname=username))
+        sleep(3)
+        try:
+            if self.browser.find_element_by_xpath(
+                    "//button[@class='fAR91 sqdOP  L3NKy _4pI4F   _8A5w5    '][text()='Message']"):
+                return True
+            else:
+                return False
+        except:
+            return False
