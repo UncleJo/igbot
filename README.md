@@ -9,3 +9,23 @@
   ```
   sudo mv geckodriver /usr/local/bin
   ```
+### Usage
+* Simply import the library and make an object.
+  ```
+  import igbot
+  bot = igbot(True) #True will not open the browser. False will open the browser.  
+  ```
+ * Login via and run the Checklist
+   ```
+   bot.login("username","password")
+   bot.pre_checklist()
+   ```
+### Features
+* Login/Logout
+* DM a person
+* Follow/Unfollow a person
+* Fetch Followers and Following list (Coming Soon)
+* Follow Mass Users Over Time (Coming Soon)
+
+### Documentation
+* Coming soon. Gotta make more features
