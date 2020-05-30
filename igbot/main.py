@@ -1,6 +1,8 @@
 from time import sleep
 from selenium import webdriver
+import progressbar
 from selenium.webdriver.firefox.options import Options
+import random
 
 
 class igbot:
@@ -330,4 +332,92 @@ class igbot:
                 print("Error Occoured!")
         else:
             print("You are not logged In!")
+
+    def __scrolly_for_followers(self, followers=None):
+        i = 0
+        if followers is None:
+            total_followers = self.following
+        else:
+            total_followers = followers
+        try:
+            dialog = self.browser.find_element_by_xpath('/html/body/div[4]/div/div[2]')
+            for x in range(int(total_followers / 10)):
+                self.browser.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", dialog)
+                sleep(random.randint(500, 1000) / 1000)
+                if i == 8:
+                    i = 0
+                    per = '{0:.2f}'.format((x / (total_followers / 10)) * 100)
+                    print("{cl}% Fetched".format(cl=per))
+                else:
+                    i = i + 1
+        except:
+            print("Unable to Scroll!")
+
+    def __scrolly_for_following(self, following=None):
+        i = 0
+        if following is None:
+            total_following = self.following
+        else:
+            total_following = following
+        try:
+            dialog = self.browser.find_element_by_xpath('/html/body/div[4]/div/div[2]')
+            for x in range(int(total_following / 8)):
+                self.browser.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", dialog)
+                sleep(random.randint(500, 1000) / 1000)
+                if i == 8:
+                    i = 0
+                    per = '{0:.2f}'.format((x / (total_following / 8)) * 100)
+                    print("{cl}% Fetched".format(cl=per))
+                else:
+                    i = i + 1
+        except:
+            print("Unable to Scroll!")
+
+    def fetch_self_followers(self):
+        if self.login_status is True:
+            self.browser.get('https://www.instagram.com/{usrname}/'.format(usrname=self.username))
+            sleep(3)
+            followers_button = self.browser.find_element_by_xpath(
+                "//a[@class='-nal3 '][@href='/{usrname}/followers/']".format(usrname=self.username))
+            followers_button.click()
+            sleep(2)
+            usernames = []
+            self.__scrolly_for_followers()
+            try:
+                print("100% Fetched! Processing...")
+                for i in range(1, self.followers + 1):
+                    usr = self.browser.find_element_by_xpath(
+                        "/html/body/div[4]/div/div[2]/ul/div/li[{n}]/div/div[1]/div[2]/div[1]/a".format(n=i))
+                    usernames.append(usr.text)
+            except:
+                print("IG did not give all followers! {f} Followers Scanned.".format(f=len(usernames)))
+                return usernames
+
+            return usernames
+        else:
+            print("You are not Logged In!")
+
+    def fetch_self_following(self):
+        if self.login_status is True:
+            self.browser.get('https://www.instagram.com/{usrname}/'.format(usrname=self.username))
+            sleep(3)
+            followers_button = self.browser.find_element_by_xpath(
+                "//a[@class='-nal3 '][@href='/{usrname}/following/']".format(usrname=self.username))
+            followers_button.click()
+            sleep(2)
+            usernames = []
+            self.__scrolly_for_following()
+            try:
+                print("100% Fetched! Processing...")
+                for i in range(1, self.following + 1):
+                    usr = self.browser.find_element_by_xpath(
+                        "/html/body/div[4]/div/div[2]/ul/div/li[{n}]/div/div[1]/div[2]/div[1]/a".format(n=i))
+                    usernames.append(usr.text)
+            except:
+                print("IG did not give all followers! {f} Following Scanned.".format(f=len(usernames)))
+                return usernames
+
+            return usernames
+        else:
+            print("You are not Logged In!")
 
