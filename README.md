@@ -21,11 +21,12 @@
    bot.pre_checklist()
    ```
 ### Features
-* Login/Logout
-* DM a person
-* Follow/Unfollow a person
-* Fetch Followers and Following list (Coming Soon)
+* Login/Logout (v0.1)
+* DM a person (v0.1.2)
+* Follow/Unfollow a person (v0.1.3)
+* Fetch Followers and Following list (v0.2.1)
 * Follow Mass Users Over Time (Coming Soon)
+* Like and Comment Module (Coming Soon)
 
 ### Documentation
 * Coming soon. Gotta make more features
