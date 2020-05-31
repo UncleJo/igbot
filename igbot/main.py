@@ -7,14 +7,14 @@ import random
 class igbot:
 
     def __init__(self, headless, gecko_path=None):
+        self.login_status = False
+        self.notification_status = None
+        self.followers = None
+        self.following = None
+        self.username = None
         if headless is True:
             self.options = Options()
             self.options.headless = True
-            self.login_status = False
-            self.notification_status = None
-            self.followers = None
-            self.following = None
-            self.username = None
             if gecko_path is None:
                 self.browser = webdriver.Firefox(options=self.options)
             else:
@@ -252,24 +252,31 @@ class igbot:
             if profile_status is True:
                 try:
                     follow_button = self.browser.find_element_by_xpath(
-                        "//button[text()='Follow'][@class='BY3EC  sqdOP  "
-                        "L3NKy   y3zKF     ']")
+                        "/html/body/div[1]/section/main/div/header/section/div[1]/div[1]/span/span[1]/button")
                     follow_button.click()
+                    sleep(2)
                     print("User Followed!")
                 except:
                     try:
-                        if self.browser.find_element_by_xpath(
-                                "//button[text()='Requested'][@class='BY3EC  sqdOP  L3NKy   "
-                                " _8A5w5    ']"):
-                            print("User Has already been send a follow request!")
+                        follow_button = self.browser.find_element_by_xpath(
+                            "/html/body/div[1]/section/main/div/header/section/div[1]/button")
+                        follow_button.click()
+                        sleep(2)
+                        print("User Followed!")
                     except:
                         try:
                             if self.browser.find_element_by_xpath(
-                                    "//button[text()='Message'][@class='fAR91 sqdOP  L3NKy "
-                                    "_4pI4F   _8A5w5    ']"):
-                                print("User is already followed!")
+                                    "//button[text()='Requested'][@class='BY3EC  sqdOP  L3NKy   "
+                                    " _8A5w5    ']"):
+                                print("User Has already been send a follow request!")
                         except:
-                            print("Could not follow User!")
+                            try:
+                                if self.browser.find_element_by_xpath(
+                                        "//button[text()='Message'][@class='fAR91 sqdOP  L3NKy "
+                                        "_4pI4F   _8A5w5    ']"):
+                                    print("User is already followed!")
+                            except:
+                                print("Could not follow User!")
 
             else:
                 print("Could not follow User!")
@@ -519,3 +526,131 @@ class igbot:
                 return False
         except:
             return False
+
+    def search_hashtag_and_get_links(self, search_string, number_of_posts_required):
+        if self.login_status is True:
+            self.browser.get('https://www.instagram.com/explore/tags/{ss}/'.format(ss=search_string))
+            sleep(4)
+            self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            oolumn = 1
+            row = 1
+            element_refresh_status = 0
+            loop = 0
+            progress = 0
+            links = set()
+            while True:
+                i = len(links)
+                try:
+                    if row == 3:
+                        oolumn = oolumn + 1
+                        row = 1
+                    elif oolumn > 10:
+                        oolumn = 1
+                    else:
+                        row = row + 1
+                    if element_refresh_status == 10:
+                        self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                        self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                        sleep(0.5)
+                        element_refresh_status = 0
+                    else:
+                        element_refresh_status = element_refresh_status + 1
+                        link = self.browser.find_element_by_xpath(
+                            "/html/body/div[1]/section/main/article/div[2]/div/div[{c}]/div[{r}]/a".format(r=row,
+                                                                                                           c=oolumn))
+                        links.add(link.get_attribute("href"))
+                        if i == len(links):
+                            self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                            self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                            sleep(0.5)
+                except:
+                    self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                    self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                if len(links) == number_of_posts_required:
+                    print("Followers Processed! Got {f} Links!".format(f=len(links)))
+                    return set(links)
+                loop = loop + 1
+                if loop > number_of_posts_required * 10:
+                    return links
+                if progress == 15:
+                    progress = 0
+                    per = '{0:.2f}'.format((len(links) / number_of_posts_required) * 100)
+                    print("{cl}% Processed".format(cl=per))
+                else:
+                    progress = progress + 1
+        else:
+            print("You are not Logged In!")
+
+    def interact_with_post_by_link(self, url, like=False, comment=False, comment_body=None, save=False):
+        global time_posted, username, description
+        if self.login_status is True:
+            self.browser.get(url)
+            sleep(2)
+            print("Opened post!")
+            liked = False
+            commented = False
+            commented_body = ""
+            saved = False
+            if like is True:
+                try:
+                    like_button = self.browser.find_element_by_xpath(
+                        "/html/body/div[1]/section/main/div/div[1]/article/div["
+                        "2]/section[1]/span[1]/button")
+                    like_button.click()
+                    liked = True
+                    print("Post Liked!")
+                except:
+                    print("Could not Like Post!")
+                    liked = False
+            if comment is True:
+                if comment_body is None:
+                    print("Did not get Comment Body")
+                else:
+                    try:
+                        comment_button = self.browser.find_element_by_xpath("/html/body/div[1]/section/main/div/div["
+                                                                            "1]/article/div[2]/section[1]/span[2]/button")
+                        comment_button.click()
+                        comment_input = self.browser.find_element_by_xpath("/html/body/div[1]/section/main/div/div["
+                                                                           "1]/article/div[2]/section[3]/div["
+                                                                           "1]/form/textarea")
+                        comment_input.send_keys(comment_body)
+                        post_button = self.browser.find_element_by_xpath("//button[text()='Post']")
+                        post_button.click()
+                        commented_body = comment_body
+                        print("Commented!")
+                        commented = True
+                        sleep(3)
+                    except:
+                        print("Could not comment")
+                        commented = False
+            if save is True:
+                try:
+                    saved_button = self.browser.find_element_by_xpath("/html/body/div[1]/section/main/div/div["
+                                                                      "1]/article/div[2]/section[1]/span[3]/button")
+                    saved_button.click()
+                    print("Post Saved!")
+                    saved = True
+                except:
+                    print("Could Save Post!")
+                    saved = False
+            try:
+                description = self.browser.find_element_by_xpath("/html/body/div[1]/section/main/div/div[1]/article/div["
+                                                                 "2]/div[1]/ul/div/li/div/div/div[2]/span").text
+            except:
+                print("Could not get Description")
+            try:
+                username = self.browser.find_element_by_xpath(
+                    "/html/body/div[1]/section/main/div/div[1]/article/header/div[2]/div[1]/div[1]/a").text
+            except:
+                print("Could Not get username")
+            try:
+                time_posted = self.browser.find_element_by_xpath(
+                    "/html/body/div[1]/section/main/div/div[1]/article/div[2]/div[2]/a/time").text
+            except:
+                print("Could not get time posted")
+            status = {"username": username, "url": url, "liked": liked, "commented": commented,
+                      "commented_body": commented_body, "saved": saved, "description": description,
+                      "time_posted": time_posted}
+            return status
+        else:
+            print("You are not Logged in!")
