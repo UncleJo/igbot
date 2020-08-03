@@ -581,7 +581,7 @@ class igbot:
         else:
             print("You are not Logged In!")
 
-    def interact_with_post_by_link(self, url, like=False, comment=False, comment_body=None, save=False):
+        def interact_with_post_by_link(self, url, like=False, comment=False, comment_body=None, save=False):
         global time_posted, username, description
         if self.login_status is True:
             self.browser.get(url)
@@ -594,8 +594,7 @@ class igbot:
             if like is True:
                 try:
                     like_button = self.browser.find_element_by_xpath(
-                        "/html/body/div[1]/section/main/div/div[1]/article/div["
-                        "2]/section[1]/span[1]/button")
+                        "/html/body/div[1]/section/main/div/div/article/div/div[3]/section[1]/span[1]/button")
                     like_button.click()
                     liked = True
                     print("Post Liked!")
@@ -607,12 +606,9 @@ class igbot:
                     print("Did not get Comment Body")
                 else:
                     try:
-                        comment_button = self.browser.find_element_by_xpath("/html/body/div[1]/section/main/div/div["
-                                                                            "1]/article/div[2]/section[1]/span[2]/button")
+                        comment_button = self.browser.find_element_by_xpath("/html/body/div[1]/section/main/div/div/article/div/div[3]/section[1]/span[2]/button")
                         comment_button.click()
-                        comment_input = self.browser.find_element_by_xpath("/html/body/div[1]/section/main/div/div["
-                                                                           "1]/article/div[2]/section[3]/div["
-                                                                           "1]/form/textarea")
+                        comment_input = self.browser.find_element_by_xpath("/html/body/div[1]/section/main/div/div/article/div/div[3]/section[3]/div[1]/form/textarea")
                         comment_input.send_keys(comment_body)
                         post_button = self.browser.find_element_by_xpath("//button[text()='Post']")
                         post_button.click()
@@ -625,8 +621,7 @@ class igbot:
                         commented = False
             if save is True:
                 try:
-                    saved_button = self.browser.find_element_by_xpath("/html/body/div[1]/section/main/div/div["
-                                                                      "1]/article/div[2]/section[1]/span[3]/button")
+                    saved_button = self.browser.find_element_by_xpath("/html/body/div[1]/section/main/div/div/article/div/div[3]/section[1]/span[3]/div/div/button")
                     saved_button.click()
                     print("Post Saved!")
                     saved = True
@@ -634,18 +629,17 @@ class igbot:
                     print("Could Save Post!")
                     saved = False
             try:
-                description = self.browser.find_element_by_xpath("/html/body/div[1]/section/main/div/div[1]/article/div["
-                                                                 "2]/div[1]/ul/div/li/div/div/div[2]/span").text
+                description = self.browser.find_element_by_xpath("/html/body/div[1]/section/main/div/div[1]/article/div/div[3]/div[1]/ul/div/li/div/div/div[2]/span").text
             except:
                 print("Could not get Description")
             try:
                 username = self.browser.find_element_by_xpath(
-                    "/html/body/div[1]/section/main/div/div[1]/article/header/div[2]/div[1]/div[1]/a").text
+                    "/html/body/div[1]/section/main/div/div[1]/article/div/header/div[2]/div[1]/div[1]/span/a").text
             except:
                 print("Could Not get username")
             try:
                 time_posted = self.browser.find_element_by_xpath(
-                    "/html/body/div[1]/section/main/div/div[1]/article/div[2]/div[2]/a/time").text
+                    "/html/body/div[1]/section/main/div/div[1]/article/div/div[3]/div[2]/a/time").text
             except:
                 print("Could not get time posted")
             status = {"username": username, "url": url, "liked": liked, "commented": commented,
