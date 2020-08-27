@@ -73,8 +73,9 @@ class igbot:
 
     def logout(self):
         if self.login_status is True:
+            sleep(3)
             self.browser.get('https://www.instagram.com/{usrname}/'.format(usrname=self.username))
-            sleep(5)
+            sleep(2)
             try:
                 settings_button = self.browser.find_element_by_xpath("//button[@class='wpO6b ']")
                 settings_button.click()
@@ -89,7 +90,7 @@ class igbot:
         self.browser.get('https://www.instagram.com/{usrname}/'.format(usrname=self.username))
         sleep(5)
         try:
-            if self.browser.find_element_by_xpath("//button[text()='Edit Profile']"):
+            if self.browser.find_element_by_xpath("//a[text()='Edit Profile']"):
                 return True
             else:
                 return False
@@ -207,7 +208,7 @@ class igbot:
                         "                                   XfCBB          HVWg4         "
                         "        ']")
                     seach_result.click()
-                    next_button = self.browser.find_element_by_xpath("//button[text()='Next']")
+                    next_button = self.browser.find_element_by_xpath("/html/body/div[4]/div/div/div[1]/div/div[2]/div/button/div")
                     next_button.click()
                     return True
             except:
@@ -339,8 +340,9 @@ class igbot:
         else:
             print("You are not logged In!")
 
-    def __get_amount_followers(self, username):
+    def get_amount_followers(self, username):
         if self.login_status is True:
+            self.browser.get('https://www.instagram.com/{usrname}/'.format(usrname=username))
             try:
                 followers_elem = self.browser.find_element_by_xpath(
                     "//a[@class='-nal3 '][@href='/{usrname}/followers/']/span[@class='g47SY ']".format(
@@ -351,13 +353,13 @@ class igbot:
         else:
             print("You are not Logged in!")
 
-    def __get_amount_following(self, username):
+    def get_amount_following(self, username):
         if self.login_status is True:
+            self.browser.get('https://www.instagram.com/{usrname}/'.format(usrname=username))
             try:
                 following_elem = self.browser.find_element_by_xpath(
-                    "//a[@class='-nal3 '][@href='/{usrname}/following/']/span[@class='g47SY ']".format(
-                        usrname=username))
-                return int(following_elem.text)
+                    "/html/body/div[1]/section/main/div/header/section/ul/li[3]/a/span").text
+                return int(following_elem.replace(",", ""))
             except:
                 print("Error Occoured!")
         else:
@@ -465,7 +467,7 @@ class igbot:
                 followers_button.click()
                 sleep(2)
                 usernames = []
-                following = self.__get_amount_following(username)
+                following = self.get_amount_following(username)
                 self.__scrolly_for_following()
                 try:
                     print("100% Fetched! Processing...")
@@ -494,7 +496,7 @@ class igbot:
                 followers_button.click()
                 sleep(2)
                 usernames = []
-                followers = self.__get_amount_followers(username)
+                followers = self.get_amount_followers(username)
                 self.__scrolly_for_followers(followers)
                 try:
                     print("100% Fetched! Processing...")
@@ -520,12 +522,12 @@ class igbot:
         sleep(3)
         try:
             if self.browser.find_element_by_xpath(
-                    "//button[@class='fAR91 sqdOP  L3NKy _4pI4F   _8A5w5    '][text()='Message']"):
+                    "/html/body/div[1]/section/main/div/div/article/div[1]/div/h2[text()='This Account is Private']"):
                 return True
             else:
                 return False
         except:
-            return False
+            return True
 
     def search_hashtag_and_get_links(self, search_string, number_of_posts_required):
         if self.login_status is True:
@@ -581,7 +583,7 @@ class igbot:
         else:
             print("You are not Logged In!")
 
-        def interact_with_post_by_link(self, url, like=False, comment=False, comment_body=None, save=False):
+    def interact_with_post_by_link(self, url, like=False, comment=False, comment_body=None, save=False):
         global time_posted, username, description
         if self.login_status is True:
             self.browser.get(url)
@@ -648,3 +650,37 @@ class igbot:
             return status
         else:
             print("You are not Logged in!")
+
+    def check_all_modules(self, username):
+        if self.login_status is True:
+            print("You Are Logged In")
+            print("This process might take some time")
+            self.pre_checklist()
+            self.send_dm(username,"bruh FU") #working
+            self.get_amount_following(username) #not working
+            self.get_amount_followers(username) #not working
+            self.fetch_self_followers() #not working
+            self.fetch_self_following() #not working
+            self.fetch_following(username) #not working
+            self.fetch_followers(username) #not working
+
+
+    def like_comment_post_by_url(self, url, limit=0, random=False):
+        if self.login_status is True:
+            result_arr = {}
+            if limit is 0 and random is False:
+                print("No Limit has been set, will like some few comments!")
+            elif limit is 0 and random is True:
+                print("No Limit has been set, will like some few comments randomly!")
+            elif limit > 0 and random is False:
+                print("Limit has been set, will like the top comments until limit is reached!")
+            elif limit > 0 and random is True:
+                print("Limit has been set, will like the top comments randomly until limit is reached!")
+            elif limit < 0:
+                print("Bottom Comments are not yet supported!")
+                return result_arr
+            self.browser.get(url)
+            comment_box = self.browser.find_element_by_xpath("/html/body/div[1]/section/main/div/div[1]/article/div[2]/div[1]/ul")
+            load_comments_button = self.browser.find_element_by_xpath("/html/body/div[1]/section/main/div/div[1]/article/div[2]/div[1]/ul/li/div/button/span")
+
+
